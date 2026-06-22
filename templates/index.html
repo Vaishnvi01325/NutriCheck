@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NutriCheck — AI-powered food label analysis and health scoring platform.">
+    <title>NutriCheck — Food Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    <!-- Chart.js for data visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- ===== SIDEBAR NAV ===== -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo">
+                <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="32" height="32" rx="8" fill="url(#brandGrad)"/>
+                    <path d="M8 16.5L13.5 22L24 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#3B82F6"/>
+                            <stop offset="1" stop-color="#06B6D4"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h1>NutriCheck</h1>
+        </div>
+
+        <ul class="nav-links">
+            <li>
+                <a href="#" class="nav-link active" data-section="upload" id="navAnalyze">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                    <span>Analyze</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link" data-section="history" id="navHistory">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span>History</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link" data-section="compare" id="navCompare">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"/>
+                        <line x1="12" y1="20" x2="12" y2="4"/>
+                        <line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                    <span>Compare</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link" id="chatOpenBtn">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span>AI Assistant</span>
+                    <span class="chat-badge" id="chatBadge" style="display:none;">1</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                {% if user.avatar %}
+                <img class="user-avatar" src="{{ user.avatar }}" alt="{{ user.name }}" referrerpolicy="no-referrer">
+                {% else %}
+                <div class="user-avatar-placeholder">{{ user.name[0].upper() }}</div>
+                {% endif %}
+                <div class="user-info">
+                    <span class="user-name">{{ user.name }}</span>
+                    <a href="{{ url_for('logout') }}" class="logout-link">Sign out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <header class="top-bar">
+            <button class="menu-toggle" id="menuToggle">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+            <div class="header-info">
+                <h2 id="pageTitle">Analyze Label</h2>
+                <p class="header-subtitle">Upload a food label to get instant nutrition analysis</p>
+            </div>
+            <div class="top-bar-user">
+                {% if user.avatar %}
+                <img src="{{ user.avatar }}" alt="{{ user.name }}" class="top-avatar" referrerpolicy="no-referrer">
+                {% else %}
+                <div class="top-avatar-placeholder">{{ user.name[0].upper() }}</div>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- ===== UPLOAD SECTION ===== -->
+        <section class="section" id="section-upload">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <div class="upload-icon-wrap">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                    </div>
+                    <h3>Drop your food label here</h3>
+                    <p>or click to browse files</p>
+                    <span class="upload-hint">PNG, JPG, JPEG, WebP up to 16 MB</span>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+            </div>
+
+            <!-- Image preview -->
+            <div class="image-preview-container hidden" id="previewContainer">
+                <div class="preview-card glass-card">
+                    <img id="previewImage" alt="Uploaded food label">
+                    <div class="preview-actions">
+                        <button class="btn btn-primary" id="analyzeBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            Analyze Label
+                        </button>
+                        <button class="btn btn-ghost" id="clearBtn">Clear</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-overlay hidden" id="loadingOverlay">
+                <div class="loading-content">
+                    <div class="spinner"></div>
+                    <h3>Analyzing your label</h3>
+                    <p class="loading-step" id="loadingStep">Running multi-pass OCR...</p>
+                </div>
+            </div>
+
+            <!-- ===== RESULTS DASHBOARD ===== -->
+            <div class="results-section hidden" id="resultsSection">
+                <!-- Score + Verdict -->
+                <div class="results-header">
+                    <div class="score-card glass-card">
+                        <h3 class="card-label">Health Score</h3>
+                        <div class="gauge-container">
+                            <svg class="gauge" viewBox="0 0 200 120" id="scoreGauge">
+                                <defs>
+                                    <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#E17055"/>
+                                        <stop offset="50%" style="stop-color:#FDCB6E"/>
+                                        <stop offset="100%" style="stop-color:#00B894"/>
+                                    </linearGradient>
+                                </defs>
+                                <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100"
+                                      fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12" stroke-linecap="round"/>
+                                <path class="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100"
+                                      fill="none" stroke="url(#gaugeGradient)" stroke-width="12" stroke-linecap="round"
+                                      id="gaugeFill"/>
+                                <text x="100" y="85" text-anchor="middle" class="gauge-score" id="gaugeScore">0</text>
+                                <text x="100" y="105" text-anchor="middle" class="gauge-label">/ 100</text>
+                            </svg>
+                        </div>
+                        <div class="model-badge">DNN Model</div>
+                    </div>
+                    <div class="verdict-card glass-card" id="verdictCard">
+                        <div class="verdict-badge" id="verdictBadge">—</div>
+                        <p class="verdict-explanation" id="verdictExplanation"></p>
+                        <button class="btn btn-ghost btn-sm ask-bot-btn" id="askBotBtn" onclick="window.NutriChat && window.NutriChat.open()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            Ask AI about this product
+                        </button>
+                    </div>
+                </div>
+
+                <!-- NEW: Chart Row -->
+                <div class="visuals-row" style="margin-bottom: 24px;">
+                    <!-- Macro Bar Chart -->
+                    <div class="chart-card glass-card">
+                        <h3 class="card-label">Macro Balance Profile</h3>
+                        <div style="position: relative; height: 260px; width: 100%;">
+                            <canvas id="macroChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nutrients Grid -->
+                <div class="nutrients-grid" id="nutrientsGrid">
+                    <!-- Filled dynamically by dashboard.js -->
+                </div>
+
+                <!-- Recommendation -->
+                <div class="recommendation-card glass-card" id="recommendationCard">
+                    <div class="rec-header">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <h3>Dietary Insight</h3>
+                    </div>
+                    <p id="recommendationText"></p>
+                </div>
+
+                <!-- Actions -->
+                <div class="result-actions">
+                    <button class="btn btn-primary" id="downloadPdfBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Report
+                    </button>
+                    <button class="btn btn-secondary" id="newAnalysisBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        New Analysis
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== HISTORY SECTION ===== -->
+        <section class="section hidden" id="section-history">
+            <div class="history-controls">
+                <h3>Analysis History</h3>
+                <button class="btn btn-ghost btn-sm" id="refreshHistoryBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+            <div class="history-grid" id="historyGrid">
+                <div class="empty-state">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.25;">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <p>No analyses yet. Upload a food label to get started.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== COMPARE SECTION ===== -->
+        <section class="section hidden" id="section-compare">
+            <div class="compare-controls">
+                <h3>Compare Products</h3>
+                <p class="compare-hint">Select 2 or more products from your history to compare</p>
+            </div>
+            <div class="compare-selection" id="compareSelection"></div>
+            <button class="btn btn-primary compare-btn hidden" id="compareBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+                Compare Selected
+            </button>
+            <div class="compare-results hidden" id="compareResults"></div>
+        </section>
+    </main>
+
+    <!-- Sidebar overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ===== AI CHATBOT PANEL ===== -->
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="chat-header-avatar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="chat-header-name">NutriBot</div>
+                    <div class="chat-header-status">AI Diet Assistant</div>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <button class="chat-icon-btn" id="chatClearBtn" title="Clear chat">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
+                    </svg>
+                </button>
+                <button class="chat-icon-btn" id="chatCloseBtn" title="Close">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <textarea id="chatInput" class="chat-input" placeholder="Ask about nutrition, diet tips, or this product..." rows="1"></textarea>
+            <button class="chat-send-btn" id="chatSendBtn" title="Send">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/history.js"></script>
+    <script src="/static/js/comparison.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/chatbot.js"></script>
+</body>
+</html>

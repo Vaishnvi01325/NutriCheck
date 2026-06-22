@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NutriCheck — AI-powered food label analysis. Sign in to get started.">
+    <title>Sign In — NutriCheck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg:           #070B12;
+            --surface:      rgba(15, 22, 36, 0.92);
+            --border:       rgba(255,255,255,0.06);
+            --border-hover: rgba(255,255,255,0.12);
+            --text:         #E8EDF4;
+            --text-muted:   #6B7A94;
+            --blue:         #3B82F6;
+            --cyan:         #06B6D4;
+            --green:        #10B981;
+            --red:          #EF4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* ── LEFT PANEL ──────────────────────────────── */
+        .left-panel {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 48px;
+            background: linear-gradient(160deg, #0B1220 0%, #070B12 60%, #0A1628 100%);
+            border-right: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+            pointer-events: none;
+        }
+
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 70%);
+            bottom: 0;
+            right: -50px;
+            pointer-events: none;
+        }
+
+        .panel-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .panel-logo {
+            width: 36px;
+            height: 36px;
+        }
+
+        .panel-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        .panel-hero {
+            position: relative;
+            z-index: 1;
+        }
+
+        .panel-hero h2 {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #E8EDF4 30%, #6B7A94 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .panel-hero p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.7;
+            max-width: 380px;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+            z-index: 1;
+            margin-top: 40px;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            color: #A0B0C8;
+        }
+
+        .feature-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-dot svg {
+            stroke: var(--blue);
+        }
+
+        .panel-footer {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── RIGHT PANEL ─────────────────────────────── */
+        .right-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: var(--bg);
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 380px;
+            animation: formIn 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        @keyframes formIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-heading {
+            margin-bottom: 36px;
+        }
+
+        .form-heading h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .form-heading p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Google Button */
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px 20px;
+            background: #fff;
+            color: #1f2937;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+
+        .google-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+        }
+
+        .google-btn:active {
+            transform: translateY(0);
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Separator */
+        .sep {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 28px 0;
+        }
+
+        .sep::before, .sep::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .sep span {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Privacy note */
+        .privacy-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 14px 16px;
+            background: rgba(59,130,246,0.06);
+            border: 1px solid rgba(59,130,246,0.12);
+            border-radius: 10px;
+            margin-bottom: 24px;
+        }
+
+        .privacy-note svg {
+            flex-shrink: 0;
+            margin-top: 1px;
+            stroke: var(--blue);
+        }
+
+        .privacy-note p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Error banner */
+        .error-banner {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            color: #FCA5A5;
+            font-size: 0.85rem;
+        }
+
+        .error-banner.visible { display: flex; }
+
+        .form-footer {
+            margin-top: 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            line-height: 1.7;
+        }
+
+        .form-footer a {
+            color: var(--blue);
+            text-decoration: none;
+        }
+
+        .form-footer a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { grid-template-columns: 1fr; }
+            .left-panel { display: none; }
+            .right-panel { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <div class="panel-brand">
+            <svg class="panel-logo" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="10" fill="url(#lg1)"/>
+                <path d="M9 18.5L15 24L27 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                    <linearGradient id="lg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#3B82F6"/>
+                        <stop offset="1" stop-color="#06B6D4"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span class="panel-name">NutriCheck</span>
+        </div>
+
+        <div class="panel-hero">
+            <h2>Know what's in your food.</h2>
+            <p>Scan any nutrition label and get an instant AI-powered health analysis. Track, compare, and make smarter food choices.</p>
+
+            <ul class="feature-list">
+                <li>
+                    <div class="feature-dot">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                    </div>
+                    Multi-pass OCR reads any label format
+                </li>
+                <li>
+                    <div class="feature-dot">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    DNN health scoring based on WHO guidelines
+                </li>
+                <li>
+                    <div class="feature-dot">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    AI diet assistant with RAG knowledge base
+                </li>
+                <li>
+                    <div class="feature-dot">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                    </div>
+                    Product history and comparison tools
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel-footer">
+            © 2025 NutriCheck. All food data is private and encrypted.
+        </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="login-form">
+
+            <div class="form-heading">
+                <h1>Sign in</h1>
+                <p>Use your Google account to access NutriCheck securely.</p>
+            </div>
+
+            {% if request.args.get('error') %}
+            <div class="error-banner visible">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                Sign-in failed. Please try again.
+            </div>
+            {% endif %}
+
+            <div class="privacy-note">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <p>Your data is private and encrypted. We only store what you scan.</p>
+            </div>
+
+            <a href="{{ url_for('google_login') }}" class="google-btn" id="googleSignInBtn">
+                <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                Continue with Google
+            </a>
+
+            <div class="sep"><span>secure authentication</span></div>
+
+            <div class="form-footer">
+                By signing in, you agree to our
+                <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
