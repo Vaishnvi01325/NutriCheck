@@ -1,0 +1,20 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Model files
+*.pkl
+
+# Uploads / generated files
+static/uploads/
+static/reports/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
